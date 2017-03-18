@@ -1,0 +1,19 @@
+Neutral:
+Mouth04_max: 0.100
+Mouth04_max_upper: 0.400
+Mouth12_max: 1.000
+
+R_eR:
+Mouth10_min: 0.200
+Mouth09_min_upper: 0.700
+
+M_B_P
+Mouth09_max: 0.500
+
+N_NG_CH_J_DH_ZH_TH_S_SH
+Mouth04_max: 0.200
+Mouth10_min: 0.050
+Mouth12_min: 0.250
+Mouth04_max_upper: 0.150
+
+
