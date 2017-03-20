@@ -41,7 +41,6 @@ Mouth10_min: 0.100
 Mouth12_max: 0.400
 Mouth09_min_upper: 0.300
 
-
 IH_AE_AH_EY_AY_H:
 Mouth05_max: 0.5
 Mouth06_max: 0.5
@@ -51,13 +50,13 @@ Mouth10_min_upper: 0.5
 Mouth04_max_lower: 0.3
 
 UW_UH_OY:
+Mouth03_min: 0.400
+Mouth05_max: 0.450
+Mouth06_max: 0.450
+Mouth07_min: 1.000
+Mouth09_min: 0.700
 Mouth11_min: 0.700
 Mouth12_min: 0.600
-Mouth09_min: 0.700
-Mouth07_min: 1.000
-Mouth06_max: 0.450
-Mouth05_max: 0.450
-Mouth03_min: 0.400
 
 AW:
 Mouth02_min: 0.550
