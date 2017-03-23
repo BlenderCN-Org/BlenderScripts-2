@@ -1,0 +1,59 @@
+import bpy
+
+def createLayerArray(layer_numbers, total_layers):
+    array = [False] * total_layers
+    for i in layer_numbers:
+        array[i] = True
+    return array
+
+def createNewBone(object, new_bone_name, parent_name, parent_connected, head, tail, roll, layer_number):
+    bpy.ops.object.mode_set(mode='EDIT', toggle=False)
+    
+    if new_bone_name in object.data.edit_bones:
+        return
+    
+    bpy.ops.armature.bone_primitive_add(name=new_bone_name)
+    
+    new_edit_bone = object.data.edit_bones[new_bone_name]
+    new_edit_bone.use_connect = parent_connected
+    new_edit_bone.parent = object.data.edit_bones[parent_name]    
+    new_edit_bone.use_inherit_rotation = True
+    new_edit_bone.use_local_location = True
+    new_edit_bone.use_inherit_scale = False
+    
+    new_edit_bone.head = head
+    new_edit_bone.tail = tail
+    new_edit_bone.roll = roll
+    
+    new_edit_bone.layers = createLayerArray([layer_number], 32)    
+    new_edit_bone.use_deform = False
+    new_edit_bone.show_wire = True
+
+def copyDeformationBone(object, new_bone_name, deform_bone_name, parent_name, parent_connected, 
+        layer_number):
+    bpy.ops.object.mode_set(mode='EDIT', toggle=False)
+    deform_edit_bone = object.data.edit_bones[deform_bone_name]
+    createNewBone(object, new_bone_name, parent_name, parent_connected, deform_edit_bone.head,
+        deform_edit_bone.tail, deform_edit_bone.roll, layer_number)
+        
+def addCopyConstraint(object, pose_bone, constraint_type, name, influence, subtarget):
+    if name not in pose_bone.constraints:
+        constraint = pose_bone.constraints.new(constraint_type)    
+        constraint.name = name
+        constraint.influence = influence
+        constraint.target = object
+        constraint.subtarget = subtarget
+    return constraint
+        
+def addDriver(source, property, target, dataPath, negative = False):
+    driver = source.driver_add(property).driver
+
+    var = driver.variables.new()
+    var.name = 'x'
+    var.targets[0].id = target
+    var.targets[0].data_path = dataPath
+
+    if not negative:
+        driver.expression = var.name
+    else:
+        driver.expression = "1 - " + var.name 
