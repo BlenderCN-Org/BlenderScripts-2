@@ -24,9 +24,9 @@ class IkifyRigPanel(bpy.types.Panel):
         
         layout.label("IK Influence")
         row = layout.row()
-        #row.label("Arm")
-        #row.prop(rig, '["MhaArmIk_L"]', text="")
-        #row.prop(rig, '["MhaArmIk_R"]', text="")
+        row.label("Arm")
+        row.prop(obj, 'ArmIk_L', text="")
+        row.prop(obj, 'ArmIk_R', text="")
         row = layout.row()
         row.label("Leg")
         row.prop(obj, 'LegIk_L', text="")

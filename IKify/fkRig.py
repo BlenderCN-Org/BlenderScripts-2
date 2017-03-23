@@ -27,7 +27,7 @@ def addOneFKControl(context, object, deform_bone_name, gizmo_obj, layer_number, 
     # Apply copy transforms constraint
     constraint = addCopyConstraint(object, pose_bone, 'COPY_ROTATION', 'FK', 1.0, new_bone_name)
     
-    # add driver
+    # add driver for FK --> IK control
     if (deform_bone_name.startswith('thigh') or deform_bone_name.startswith('calf') or
         deform_bone_name.startswith('foot') or deform_bone_name.startswith('toes')):
         L_R = deform_bone_name[-1]

@@ -43,8 +43,32 @@ def addCopyConstraint(object, pose_bone, constraint_type, name, influence, subta
         constraint.influence = influence
         constraint.target = object
         constraint.subtarget = subtarget
-    return constraint
+        return constraint
+
+def addLimitConstraint(pose_bone, constraint_type, name, influence, x = [False], y = [False],
+        z = [False]):
+    if name not in pose_bone.constraints:
+        constraint = pose_bone.constraints.new(constraint_type)    
+        constraint.name = name
+        constraint.influence = influence
         
+        if x[0]:
+            constraint.use_limit_x = True
+            constraint.min_x = x[1]
+            constraint.max_x = x[2]
+
+        if y[0]:
+            constraint.use_limit_y = True
+            constraint.min_y = y[1]
+            constraint.max_y = y[2]
+            
+        if z[0]:
+            constraint.use_limit_z = True
+            constraint.min_z = z[1]
+            constraint.max_z = z[2]
+        
+        return constraint    
+    
 def addDriver(source, property, target, dataPath, negative = False):
     driver = source.driver_add(property).driver
 

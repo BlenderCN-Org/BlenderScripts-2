@@ -13,10 +13,11 @@ if "bpy" in locals():
     imp.reload(utils)
     imp.reload(ikRig)
     imp.reload(fkRig)
-    print("Reloaded multifiles")
+    imp.reload(rig_properties)
+    print("IKify: Reloaded multifiles")
 else:
-    from . import CreateBodyRigOperator, rigUI, utils, ikRig, fkRig
-    print("Imported multifiles")
+    from . import CreateBodyRigOperator, rigUI, utils, ikRig, fkRig, rig_properties
+    print("IKify: Imported multifiles")
 
 import bpy
 from .rig_properties import add_properties
