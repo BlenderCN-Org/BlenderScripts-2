@@ -31,3 +31,9 @@ class IkifyRigPanel(bpy.types.Panel):
         row.label("Leg")
         row.prop(obj, 'LegIk_L', text="")
         row.prop(obj, 'LegIk_R', text="")
+        
+        layout.label("Constrain Rotation")
+        row = layout.row()
+        row.label("Arm")
+        row.prop(obj, 'ArmRotationIk_L', text="")
+        row.prop(obj, 'ArmRotationIk_R', text="")

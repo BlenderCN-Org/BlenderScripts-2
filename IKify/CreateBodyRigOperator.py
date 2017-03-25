@@ -1,6 +1,7 @@
 import bpy
 from .utils import createLayerArray
 from .ikRig import addOneLegIK
+from .ikRig import addOneArmIK
 from .fkRig import addOneFKControl
 
 def createFKControls(context, object):
@@ -15,19 +16,23 @@ def createFKControls(context, object):
     addOneFKControl(context, object, 'toes_L', gizmo_obj, 1, 2.0, foot_L_FK)
     addOneFKControl(context, object, 'toes_R', gizmo_obj, 1, 2.0, foot_R_FK)
     
-    upperarm_L_FK = addOneFKControl(context, object, 'upperarm_L', gizmo_obj, 2, 1.0, 'clavicle_L')
-    upperarm_R_FK = addOneFKControl(context, object, 'upperarm_R', gizmo_obj, 2, 1.0, 'clavicle_R')
+    # in the case of upper arms, we don't pass parent information. The addOneFKControl function
+    # will create a isolate rotation socket rig and set parents accordingly.
+    upperarm_L_FK = addOneFKControl(context, object, 'upperarm_L', gizmo_obj, 2, 1.0, '')
+    upperarm_R_FK = addOneFKControl(context, object, 'upperarm_R', gizmo_obj, 2, 1.0, '')    
     lowerarm_L_FK = addOneFKControl(context, object, 'lowerarm_L', gizmo_obj, 2, 0.8, upperarm_L_FK)
     lowerarm_R_FK = addOneFKControl(context, object, 'lowerarm_R', gizmo_obj, 2, 0.8, upperarm_R_FK)
     addOneFKControl(context, object, 'hand_L', gizmo_obj, 2, 4.5, lowerarm_L_FK)
     addOneFKControl(context, object, 'hand_R', gizmo_obj, 2, 4.5, lowerarm_R_FK)
     
-    neck_FK = addOneFKControl(context, object, 'neck', gizmo_obj, 3, 1.5, 'spine03' , False)
-    addOneFKControl(context, object, 'head', gizmo_obj, 3, 2.0, neck_FK)
+#    neck_FK = addOneFKControl(context, object, 'neck', gizmo_obj, 3, 1.5, 'spine03' , False)
+#    addOneFKControl(context, object, 'head', gizmo_obj, 3, 2.0, neck_FK)
 
 def createIKControls(context, object):
     addOneLegIK(context, object, 'L')
     addOneLegIK(context, object, 'R')
+    addOneArmIK(context, object, 'L')
+    addOneArmIK(context, object, 'R')
     
 class BodyRigController(bpy.types.Operator):
     """Create the body rig"""

@@ -9,3 +9,8 @@ def add_properties():
         max=1.0)
     bpy.types.Object.LegIk_R = bpy.props.FloatProperty(name='LegIk_R', default=0.0, min=0.0, 
         max=1.0)
+    bpy.types.Object.ArmRotationIk_L = bpy.props.FloatProperty(name='ArmRotationIk_L', default=0.0,
+        min=0.0, max=1.0)
+    bpy.types.Object.ArmRotationIk_R = bpy.props.FloatProperty(name='ArmRotationIk_R', default=0.0,
+        min=0.0, max=1.0)
+    
