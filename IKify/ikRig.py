@@ -68,19 +68,23 @@ def addOneLegIK(context, object, L_R):
     
     pose_thigh = object.pose.bones['thigh_' + L_R]
     constraint = addCopyConstraint(object, pose_thigh, 'COPY_ROTATION', 'IK', 0.0, MCH_THIGH)
-    addDriver(constraint, 'influence', object, DRIVER_TARGET)
+    if constraint:
+        addDriver(constraint, 'influence', object, DRIVER_TARGET)
     
     pose_calf = object.pose.bones['calf_' + L_R]
     constraint = addCopyConstraint(object, pose_calf, 'COPY_ROTATION', 'IK', 0.0, MCH_CALF)
-    addDriver(constraint, 'influence', object, DRIVER_TARGET)
+    if constraint:
+        addDriver(constraint, 'influence', object, DRIVER_TARGET)
     
     pose_foot = object.pose.bones['foot_' + L_R]
     constraint = addCopyConstraint(object, pose_foot, 'COPY_ROTATION', 'IK', 0.0, MCH_FOOT)
-    addDriver(constraint, 'influence', object, DRIVER_TARGET)
+    if constraint:
+        addDriver(constraint, 'influence', object, DRIVER_TARGET)
 
     pose_toes = object.pose.bones['toes_' + L_R]
     constraint = addCopyConstraint(object, pose_toes, 'COPY_ROTATION', 'IK', 0.0, TOES_IK)
-    addDriver(constraint, 'influence', object, DRIVER_TARGET)
+    if constraint:
+        addDriver(constraint, 'influence', object, DRIVER_TARGET)
     
     # next, add the IK constraint itself
     pose_calf_IK = object.pose.bones[MCH_CALF]
@@ -101,22 +105,26 @@ def addOneLegIK(context, object, L_R):
     pose_mch_foot_rocker = object.pose.bones[MCH_FOOT_ROCKER]
     copyConstraint = addCopyConstraint(object, pose_mch_foot_rocker, 'COPY_ROTATION', 'FOOT_ROLL',
         1.0, FOOT_ROLL_IK)
-    copyConstraint.owner_space = 'LOCAL'
-    copyConstraint.target_space = 'LOCAL'
-    
+    if copyConstraint:
+        copyConstraint.owner_space = 'LOCAL'
+        copyConstraint.target_space = 'LOCAL'
+
     limitConstraint = addLimitConstraint(pose_mch_foot_rocker, 'LIMIT_ROTATION', 'FOOT_ROLL_LIMIT',
         1.0, [True, 0, PI / 2.0])
-    limitConstraint.owner_space = 'LOCAL'
+    if limitConstraint:
+        limitConstraint.owner_space = 'LOCAL'
     
     pose_foot_roll_parent = object.pose.bones[MCH_FOOT_ROLL_PARENT]
     copyConstraint = addCopyConstraint(object, pose_foot_roll_parent, 'COPY_ROTATION', 'FOOT_ROLL',
         1.0, FOOT_ROLL_IK)
-    copyConstraint.owner_space = 'LOCAL'
-    copyConstraint.target_space = 'LOCAL'
+    if copyConstraint:        
+        copyConstraint.owner_space = 'LOCAL'
+        copyConstraint.target_space = 'LOCAL'
     
     limitConstraint = addLimitConstraint(pose_foot_roll_parent, 'LIMIT_ROTATION', 'FOOT_ROLL_LIMIT',
         1.0, [True, -1.0 * (PI / 2.0), 0])
-    limitConstraint.owner_space = 'LOCAL'
+    if limitConstraint:
+        limitConstraint.owner_space = 'LOCAL'
     
     # Limit transformations
     pose_foot_ik = object.pose.bones[FOOT_IK]
@@ -169,15 +177,18 @@ def addOneArmIK(context, object, L_R):
     
     pose_upperarm = object.pose.bones['upperarm_' + L_R]
     constraint = addCopyConstraint(object, pose_upperarm, 'COPY_ROTATION', 'IK', 0.0, MCH_UPPERARM)
-    addDriver(constraint, 'influence', object, DRIVER_TARGET)
+    if constraint:
+        addDriver(constraint, 'influence', object, DRIVER_TARGET)
     
     pose_lowerarm = object.pose.bones['lowerarm_' + L_R]
     constraint = addCopyConstraint(object, pose_lowerarm, 'COPY_ROTATION', 'IK', 0.0, MCH_LOWERARM)
-    addDriver(constraint, 'influence', object, DRIVER_TARGET)
+    if constraint:
+        addDriver(constraint, 'influence', object, DRIVER_TARGET)
     
     pose_hand = object.pose.bones['hand_' + L_R]
     constraint = addCopyConstraint(object, pose_hand, 'COPY_ROTATION', 'IK', 0.0, HAND_IK)
-    addDriver(constraint, 'influence', object, DRIVER_TARGET)
+    if constraint:
+        addDriver(constraint, 'influence', object, DRIVER_TARGET)
     
     # next, add the IK constraint itself
     pose_lowerarm = object.pose.bones[MCH_LOWERARM]

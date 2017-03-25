@@ -3,6 +3,7 @@ from .utils import createLayerArray
 from .ikRig import addOneLegIK
 from .ikRig import addOneArmIK
 from .fkRig import addOneFKControl
+from .fkRig import addHeadNeckRig
 
 def createFKControls(context, object):
     gizmo_obj = bpy.data.objects['GZM_Circle']
@@ -25,8 +26,9 @@ def createFKControls(context, object):
     addOneFKControl(context, object, 'hand_L', gizmo_obj, 2, 4.5, lowerarm_L_FK)
     addOneFKControl(context, object, 'hand_R', gizmo_obj, 2, 4.5, lowerarm_R_FK)
     
-#    neck_FK = addOneFKControl(context, object, 'neck', gizmo_obj, 3, 1.5, 'spine03' , False)
-#    addOneFKControl(context, object, 'head', gizmo_obj, 3, 2.0, neck_FK)
+    addHeadNeckRig(context, object, gizmo_obj)
+    # neck_FK = addOneFKControl(context, object, 'neck', gizmo_obj, 3, 1.5, 'spine03' , False)
+    # addOneFKControl(context, object, 'head', gizmo_obj, 3, 2.0, neck_FK)
 
 def createIKControls(context, object):
     addOneLegIK(context, object, 'L')
