@@ -12,9 +12,7 @@ def createNewBone(object, new_bone_name, parent_name, parent_connected, head, ta
     if new_bone_name in object.data.edit_bones:
         return
     
-    bpy.ops.armature.bone_primitive_add(name=new_bone_name)
-    
-    new_edit_bone = object.data.edit_bones[new_bone_name]
+    new_edit_bone = object.data.edit_bones.new(new_bone_name)    
     new_edit_bone.use_connect = parent_connected
     new_edit_bone.parent = object.data.edit_bones[parent_name]    
     new_edit_bone.use_inherit_rotation = True
@@ -80,4 +78,5 @@ def addDriver(source, property, target, dataPath, negative = False):
     if not negative:
         driver.expression = var.name
     else:
-        driver.expression = "1 - " + var.name 
+        driver.expression = "1 - " + var.name
+    

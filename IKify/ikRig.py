@@ -17,9 +17,7 @@ def addOneLegIK(context, object, L_R):
     TOES_IK = 'toes_' + L_R + '_IK'
     FOOT_ROLL_IK = 'foot_roll_' + L_R + '_IK'
     KNEE_TARGET_IK = 'knee_target_' + L_R + '_IK'
-    
-    PI = 3.14159
-    
+        
     bpy.ops.object.mode_set(mode='EDIT', toggle=False)
 
     copyDeformationBone(object, MCH_THIGH, 'thigh_' + L_R, 'pelvis', False, 24)

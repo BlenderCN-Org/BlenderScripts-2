@@ -14,9 +14,10 @@ if "bpy" in locals():
     imp.reload(ikRig)
     imp.reload(fkRig)
     imp.reload(rig_properties)
+    imp.reload(GamifyRigOperator)
     print("IKify: Reloaded multifiles")
 else:
-    from . import CreateBodyRigOperator, rigUI, utils, ikRig, fkRig, rig_properties
+    from . import CreateBodyRigOperator, rigUI, utils, ikRig, fkRig, rig_properties, GamifyRigOperator
     print("IKify: Imported multifiles")
 
 import bpy
