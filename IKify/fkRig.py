@@ -1,6 +1,8 @@
 import bpy
 from .utils import *
 
+PI = 3.14159
+
 def addOneFKControl(context, object, deform_bone_name, gizmo_obj, layer_number, scale, 
     new_bone_parent, parent_connected = True):    
     # Make sure we are in pose mode
@@ -191,22 +193,16 @@ def addHeadNeckRig(context, object, gizmo_obj):
 def addTorsoRig(context, object, gizmo_obj):
     bpy.ops.object.mode_set(mode='EDIT', toggle=False)
     
-    # Dissolve the spine03 bone
-    if 'spine03' in object.data.edit_bones:
-        spine03_bone = object.data.edit_bones['spine03']
-        spine03_tail = spine03_bone.tail.copy()
-        object.data.edit_bones.remove(object.data.edit_bones['spine03'])
-        object.data.edit_bones['spine02'].tail = spine03_tail
-        
     MCH_PELVIS_PARENT = 'MCH-pelvis_parent'
     MCH_SPINE01_PARENT = 'MCH-spine01_parent'
-    MCH_SPINE02_PARENT = 'MCH-spine02_parent'
     MCH_SPINE01_FK_PARENT = 'MCH-spine02_FK_parent'
+    MCH_SPINE02_PARENT = 'MCH-spine02_parent'
+    MCH_SPINE03_PARENT = 'MCH-spine03_parent'    
     PELVIS_FK = 'pelvis_FK'
     SPINE01_FK = 'spine01_FK'
     SPINE02_FK = 'spine02_FK'    
     
-    # Create parent bones for 3 torso bones
+    # Create parent bones for 4 torso bones
     pelvis_bone = object.data.edit_bones['pelvis']
     head = pelvis_bone.tail.copy()
     tail = head.copy()
@@ -233,6 +229,15 @@ def addTorsoRig(context, object, gizmo_obj):
     spine02_bone.parent = object.data.edit_bones[MCH_SPINE02_PARENT]
     spine02_bone.use_inherit_scale = True  # We will allow scaling of chest and stomach of the body
 
+    spine03_bone = object.data.edit_bones['spine03']
+    head = spine03_bone.head.copy()
+    tail = head.copy()
+    tail.z += 0.1
+    createNewBone(object, MCH_SPINE03_PARENT, 'spine02', False, head, tail, 0, 25)    
+    spine03_bone.use_connect = False
+    spine03_bone.parent = object.data.edit_bones[MCH_SPINE03_PARENT]
+    spine02_bone.use_inherit_scale = True    
+    
     # Flip the pelvis deformation bone
     pelvis_head = pelvis_bone.head.copy()
     pelvis_bone.head = pelvis_bone.tail.copy()  
@@ -283,6 +288,12 @@ def addTorsoRig(context, object, gizmo_obj):
     pose_spine02_parent = object.pose.bones[MCH_SPINE02_PARENT]
     addCopyConstraint(object, pose_spine02_parent, 'COPY_TRANSFORMS', 'FK', 1.0, SPINE02_FK)
 
+    pose_spine03_parent = object.pose.bones[MCH_SPINE03_PARENT]
+    rot_constraint = addCopyConstraint(object, pose_spine03_parent, 'COPY_ROTATION', 'FK_ROT', 0.1,
+        SPINE02_FK)
+    if rot_constraint:
+        rot_constraint.owner_space = 'LOCAL'
+    addCopyConstraint(object, pose_spine03_parent, 'COPY_SCALE', 'FK_SCALE', 1.0, SPINE02_FK)
     # Add constraints for breasts
     
     # Lock location for spine01 and spine02 FK bones
@@ -294,6 +305,109 @@ def addTorsoRig(context, object, gizmo_obj):
     
     pose_spine02_fk = object.pose.bones[SPINE02_FK]
     pose_spine02_fk.lock_location = [True, True, True]
+
+def addFingerBendDriver(object, source, target_bone):
+    driver = source.driver_add('rotation_euler', 0).driver
+    
+    var = driver.variables.new()
+    var.type = 'TRANSFORMS'
+    var.name = 'x'
+    var.targets[0].id = object
+    var.targets[0].bone_target = target_bone
+    var.targets[0].transform_type = 'SCALE_Y'
+    var.targets[0].transform_space = 'LOCAL_SPACE'
+    
+    driver.expression = '(x - 1) * ' + str(PI)
+    
+def addOneFingerRig(context, object, finger, L_R, gizmo_obj):
+    bpy.ops.object.mode_set(mode='EDIT', toggle=False)
+
+    MCH_FINGER02_parent = 'MCH-' + finger + '02_' + L_R + "_parent_FK"
+    MCH_FINGER03_parent = 'MCH-' + finger + '03_' + L_R + "_parent_FK"    
+    FINGER_FK = finger + "_" + L_R + "_FK"
+    FINGER01 = finger + '01_' + L_R
+    FINGER02 = finger + '02_' + L_R
+    FINGER03 = finger + '03_' + L_R
+    
+    # Create bones which will act as parents for rotation
+    copyDeformationBone(object, MCH_FINGER02_parent, FINGER02, FINGER01, False, 24)
+    copyDeformationBone(object, MCH_FINGER03_parent, FINGER03, FINGER02, False, 24)
+    
+    # Set deform bones' parents to new bones created above
+    finger02_bone = object.data.edit_bones[FINGER02]
+    finger02_bone.use_connect = False
+    finger02_bone.parent = object.data.edit_bones[MCH_FINGER02_parent]
+    finger02_bone.layers[6] = True
+
+    finger03_bone = object.data.edit_bones[FINGER03]
+    finger03_bone.use_connect = False
+    finger03_bone.parent = object.data.edit_bones[MCH_FINGER03_parent]
+    finger03_bone.layers[6] = True
+    
+    # Create the finger FK control bone
+    finger01_bone = object.data.edit_bones[FINGER01]
+    head = finger01_bone.head.copy()
+    tail = finger03_bone.tail.copy()
+    roll = finger01_bone.roll
+    createNewBone(object, FINGER_FK, finger01_bone.parent.name, False, head, tail, roll, 5)
+    
+    bpy.ops.object.mode_set(mode='POSE', toggle=False)
+    pose_finger01 = object.pose.bones[FINGER01]
+    rotation_constraint = addCopyConstraint(object, pose_finger01, 'COPY_ROTATION', 'FK', 1.0,
+        FINGER_FK)
+    if rotation_constraint:
+        rotation_constraint.owner_space = 'LOCAL'
+        rotation_constraint.target_space = 'LOCAL'
+    
+    pose_finger02_parent = object.pose.bones[MCH_FINGER02_parent]
+    pose_finger02_parent.rotation_mode = 'YZX'
+    addFingerBendDriver(object, pose_finger02_parent, FINGER_FK)
+    
+    pose_finger03_parent = object.pose.bones[MCH_FINGER03_parent]
+    pose_finger03_parent.rotation_mode = 'YZX'
+    addFingerBendDriver(object, pose_finger03_parent, FINGER_FK)
+    
+    pose_finger_fk = object.pose.bones[FINGER_FK]
+    pose_finger_fk.lock_scale = [True, False, True]
+    
+    pose_finger02 = object.pose.bones[FINGER02]
+    pose_finger02.custom_shape = gizmo_obj
+    pose_finger02.use_custom_shape_bone_size = True
+    pose_finger02.custom_shape_scale = 1.0
+    
+    pose_finger03 = object.pose.bones[FINGER03]
+    pose_finger03.custom_shape = gizmo_obj
+    pose_finger03.use_custom_shape_bone_size = True
+    pose_finger03.custom_shape_scale = 1.5
+    
+def addPalmRig(context, object, L_R):
+    PINKY = 'pinky00_' + L_R
+    RING = 'ring00_' + L_R
+    MIDDLE = 'middle00_' + L_R    
+
+    bpy.ops.object.mode_set(mode='EDIT', toggle=False)
+    pinky_palm_bone = object.data.edit_bones[PINKY]
+    pinky_palm_bone.layers[5] = True
+    
+    bpy.ops.object.mode_set(mode='POSE', toggle=False)
+    pose_ring_palm = object.pose.bones[RING]
+    rot_constraint = addCopyConstraint(object, pose_ring_palm, 'COPY_ROTATION', 'PALM', 0.42,
+        PINKY)
+    if rot_constraint:
+        rot_constraint.owner_space = 'LOCAL'
+        rot_constraint.target_space = 'LOCAL'
+
+    pose_middle_palm = object.pose.bones[MIDDLE]
+    rot_constraint = addCopyConstraint(object, pose_middle_palm, 'COPY_ROTATION', 'PALM', 0.17,
+        PINKY)
+    if rot_constraint:
+        rot_constraint.owner_space = 'LOCAL'
+        rot_constraint.target_space = 'LOCAL'
+    
+    pose_pinky_palm = object.pose.bones[PINKY]
+    pose_pinky_palm.rotation_mode = 'XYZ'
+    pose_pinky_palm.lock_rotation = [False, True, True]
+    
     
     
 

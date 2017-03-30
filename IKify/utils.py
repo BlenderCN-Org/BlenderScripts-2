@@ -31,8 +31,9 @@ def copyDeformationBone(object, new_bone_name, deform_bone_name, parent_name, pa
         layer_number):
     bpy.ops.object.mode_set(mode='EDIT', toggle=False)
     deform_edit_bone = object.data.edit_bones[deform_bone_name]
-    createNewBone(object, new_bone_name, parent_name, parent_connected, deform_edit_bone.head,
-        deform_edit_bone.tail, deform_edit_bone.roll, layer_number)
+    createNewBone(object, new_bone_name, parent_name, parent_connected, 
+        deform_edit_bone.head.copy(), deform_edit_bone.tail.copy(), deform_edit_bone.roll, 
+        layer_number)
         
 def addCopyConstraint(object, pose_bone, constraint_type, name, influence, subtarget):
     if name not in pose_bone.constraints:
@@ -71,6 +72,7 @@ def addDriver(source, property, target, dataPath, negative = False):
     driver = source.driver_add(property).driver
 
     var = driver.variables.new()
+    var.type = 'SINGLE_PROP'
     var.name = 'x'
     var.targets[0].id = target
     var.targets[0].data_path = dataPath
@@ -79,4 +81,3 @@ def addDriver(source, property, target, dataPath, negative = False):
         driver.expression = var.name
     else:
         driver.expression = "1 - " + var.name
-    

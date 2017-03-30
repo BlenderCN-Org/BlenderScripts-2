@@ -211,7 +211,10 @@ def addOneArmIK(context, object, L_R):
     pose_hand_target_ik.lock_scale = [True, True, True]
     pose_hand_target_ik.rotation_mode = 'XYZ'
     pose_hand_target_ik.lock_rotation = [True, True, True]
-        
+
+    
+    
+
 
 
 

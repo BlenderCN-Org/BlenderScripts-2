@@ -5,6 +5,8 @@ from .ikRig import addOneArmIK
 from .fkRig import addOneFKControl
 from .fkRig import addHeadNeckRig
 from .fkRig import addTorsoRig
+from .fkRig import addOneFingerRig
+from .fkRig import addPalmRig
 
 def createFKControls(context, object):
     gizmo_obj = bpy.data.objects['GZM_Circle']
@@ -28,7 +30,14 @@ def createFKControls(context, object):
     addOneFKControl(context, object, 'hand_R', gizmo_obj, 2, 4.5, lowerarm_R_FK)
     
     addTorsoRig(context, object, gizmo_obj)
-    addHeadNeckRig(context, object, gizmo_obj)    
+    addHeadNeckRig(context, object, gizmo_obj)
+
+    for finger in ['thumb', 'index', 'middle', 'ring', 'pinky']:
+        addOneFingerRig(context, object, finger, 'L', gizmo_obj)
+        addOneFingerRig(context, object, finger, 'R', gizmo_obj)
+
+    addPalmRig(context, object, 'L')
+    addPalmRig(context, object, 'R')    
 
 def createIKControls(context, object):
     addOneLegIK(context, object, 'L')
@@ -65,7 +74,7 @@ class BodyRigController(bpy.types.Operator):
         createIKControls(context, obj)
         
         # Set layer visibility to only newly added controls
-        bpy.ops.armature.armature_layers(layers=createLayerArray([1,2,3,4], 32))
+        bpy.ops.armature.armature_layers(layers=createLayerArray([1,2,3,4,5], 32))
 
         return {'FINISHED'}
 
