@@ -4,6 +4,8 @@ from .utils import *
 PI = 3.14159
     
 def addOneLegIK(context, object, L_R):    
+    VIEW_LAYER = 4
+    MCH_LAYER = 24
     # create all the bones we need. These are created in a topologically sorted manner,
     # so that parents can be set correctly during creation of bones themselves.
     # MCH bones are mechanism bones which will be hidden from the user
@@ -20,26 +22,26 @@ def addOneLegIK(context, object, L_R):
         
     bpy.ops.object.mode_set(mode='EDIT', toggle=False)
 
-    copyDeformationBone(object, MCH_THIGH, 'thigh_' + L_R, 'pelvis', False, 24)
-    copyDeformationBone(object, MCH_CALF, 'calf_' + L_R, MCH_THIGH, True, 24)    
-    copyDeformationBone(object, FOOT_IK, 'foot_' + L_R, 'root', False, 4)
+    copyDeformationBone(object, MCH_THIGH, 'thigh_' + L_R, 'pelvis', False, MCH_LAYER)
+    copyDeformationBone(object, MCH_CALF, 'calf_' + L_R, MCH_THIGH, True, MCH_LAYER)    
+    copyDeformationBone(object, FOOT_IK, 'foot_' + L_R, 'root', False, VIEW_LAYER)
     
     # Create the foot roll parent
     foot = object.data.edit_bones['foot_' + L_R]
     head = foot.tail.copy()
     tail = foot.head.copy()
     head.y = tail.y
-    createNewBone(object, MCH_FOOT_ROLL_PARENT, FOOT_IK, False, head, tail, 0, 24)
+    createNewBone(object, MCH_FOOT_ROLL_PARENT, FOOT_IK, False, head, tail, 0, MCH_LAYER)
     
     # Create the foot rocker Bone
     foot = object.data.edit_bones['foot_' + L_R]
     head = foot.tail.copy()
     tail = foot.head.copy()
     tail.z = head.z
-    createNewBone(object, MCH_FOOT_ROCKER,  MCH_FOOT_ROLL_PARENT, False, head, tail, 0, 24)
+    createNewBone(object, MCH_FOOT_ROCKER,  MCH_FOOT_ROLL_PARENT, False, head, tail, 0, MCH_LAYER)
     
-    copyDeformationBone(object, MCH_FOOT, 'foot_' + L_R, MCH_FOOT_ROCKER, False, 24)    
-    copyDeformationBone(object, TOES_IK, 'toes_' + L_R, MCH_FOOT_ROLL_PARENT, False, 4)
+    copyDeformationBone(object, MCH_FOOT, 'foot_' + L_R, MCH_FOOT_ROCKER, False, MCH_LAYER)    
+    copyDeformationBone(object, TOES_IK, 'toes_' + L_R, MCH_FOOT_ROLL_PARENT, False, VIEW_LAYER)
 
     # Create the foot roll control
     head = foot.tail.copy()
@@ -47,7 +49,7 @@ def addOneLegIK(context, object, L_R):
     tail = head.copy()
     tail.z += 0.08
     tail.y += 0.02
-    createNewBone(object, FOOT_ROLL_IK, FOOT_IK, False, head, tail, 0, 4)
+    createNewBone(object, FOOT_ROLL_IK, FOOT_IK, False, head, tail, 0, VIEW_LAYER)
         
     # Create knee target IK control bone
     calf = object.data.edit_bones['calf_' + L_R]
@@ -55,7 +57,7 @@ def addOneLegIK(context, object, L_R):
     head.y -= 0.7
     tail = head.copy()
     tail.y -= 0.1
-    createNewBone(object, KNEE_TARGET_IK, MCH_FOOT, False, head, tail, 0, 4)
+    createNewBone(object, KNEE_TARGET_IK, MCH_FOOT, False, head, tail, 0, VIEW_LAYER)
     
     # Switch to pose mode to add all the constraints
     bpy.ops.object.mode_set(mode='POSE', toggle=False)
@@ -147,6 +149,9 @@ def addOneLegIK(context, object, L_R):
     
     
 def addOneArmIK(context, object, L_R):    
+    VIEW_LAYER = 5
+    MCH_LAYER = 24
+
     MCH_UPPERARM = 'MCH-upperarm_' + L_R + '_IK'
     MCH_LOWERARM = 'MCH-lowerarm_' + L_R + '_IK'
     HAND_IK = 'hand_' + L_R + '_IK'
@@ -154,17 +159,17 @@ def addOneArmIK(context, object, L_R):
 
     bpy.ops.object.mode_set(mode='EDIT', toggle=False)
 
-    copyDeformationBone(object, MCH_UPPERARM, 'upperarm_' + L_R, 'clavicle_' + L_R, True, 24)
-    copyDeformationBone(object, MCH_LOWERARM, 'lowerarm_' + L_R, MCH_UPPERARM, True, 24)    
-    copyDeformationBone(object, HAND_IK, 'hand_' + L_R, 'root', False, 4)
+    copyDeformationBone(object, MCH_UPPERARM, 'upperarm_' + L_R, 'clavicle_' + L_R, True, MCH_LAYER)
+    copyDeformationBone(object, MCH_LOWERARM, 'lowerarm_' + L_R, MCH_UPPERARM, True, MCH_LAYER)    
+    copyDeformationBone(object, HAND_IK, 'hand_' + L_R, 'root', False, VIEW_LAYER)
 
     # Create knee target IK control bone
     lowerarm = object.data.edit_bones['lowerarm_' + L_R]
     head = lowerarm.head.copy()  # elbow position
-    head.y += 0.7
+    head.y += 0.5
     tail = head.copy()
     tail.y += 0.1
-    createNewBone(object, ELBOW_TARGET_IK, HAND_IK, False, head, tail, 0, 4)
+    createNewBone(object, ELBOW_TARGET_IK, HAND_IK, False, head, tail, 0, VIEW_LAYER)
         
     # Switch to pose mode to add all the constraints
     bpy.ops.object.mode_set(mode='POSE', toggle=False)
@@ -212,8 +217,9 @@ def addOneArmIK(context, object, L_R):
     pose_hand_target_ik.rotation_mode = 'XYZ'
     pose_hand_target_ik.lock_rotation = [True, True, True]
 
-    
-    
+    # set custom shapes
+    setCustomShape(object, HAND_IK, 'GZM_Hand_' + L_R + '_IK', 1.0)
+    setCustomShape(object, ELBOW_TARGET_IK, 'GZM_Elbow_' + L_R, 1.0)
 
 
 

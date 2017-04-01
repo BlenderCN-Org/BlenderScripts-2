@@ -80,4 +80,29 @@ def addDriver(source, property, target, dataPath, negative = False):
     if not negative:
         driver.expression = var.name
     else:
-        driver.expression = "1 - " + var.name
+        driver.expression = "1 - " + var.name        
+        
+def createGizmo(context, name, mesh_data):
+    if name in bpy.data.objects:
+        return
+     
+    verts = mesh_data[0]
+    edges = mesh_data[1]
+    
+    mesh = bpy.data.meshes.new(name)
+    mesh.from_pydata(verts, edges, [])
+    mesh.update()
+    obj = bpy.data.objects.new(name, mesh)
+    context.scene.objects.link(obj)
+    obj.layers = createLayerArray([19], 20)
+    
+def setCustomShape(object, bone_name, gizmo_name, scale):
+    bpy.ops.object.mode_set(mode='POSE', toggle=False)
+    
+    pose_bone = object.pose.bones[bone_name]
+    gizmo_obj = bpy.data.objects[gizmo_name]
+    
+    pose_bone.custom_shape = gizmo_obj
+    pose_bone.use_custom_shape_bone_size = True
+    pose_bone.custom_shape_scale = scale
+    

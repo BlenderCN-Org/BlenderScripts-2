@@ -1,5 +1,7 @@
 import bpy
 from .utils import createLayerArray
+from .utils import createGizmo
+from .utils import setCustomShape
 from .ikRig import addOneLegIK
 from .ikRig import addOneArmIK
 from .fkRig import addOneFKControl
@@ -7,6 +9,7 @@ from .fkRig import addHeadNeckRig
 from .fkRig import addTorsoRig
 from .fkRig import addOneFingerRig
 from .fkRig import addPalmRig
+from .gizmoData import *
 
 def createFKControls(context, object):
     gizmo_obj = bpy.data.objects['GZM_Circle']
@@ -45,6 +48,20 @@ def createIKControls(context, object):
     addOneArmIK(context, object, 'L')
     addOneArmIK(context, object, 'R')
     
+def createAllGizmos(context):
+    createGizmo(context, 'GZM_Circle', circleGizmoData())
+    createGizmo(context, 'GZM_root', rootGizmoData())    
+    createGizmo(context, 'GZM_shoulder', shoulderGizmoData())
+    createGizmo(context, 'GZM_breasts', breastsGizmoData())
+    createGizmo(context, 'GZM_chest', chestGizmoData())
+    createGizmo(context, 'GZM_spine', spineGizmoData())
+    createGizmo(context, 'GZM_pelvis', pelvisGizmoData())
+    createGizmo(context, 'GZM_Hand_L_IK', handLIkGizmoData())
+    createGizmo(context, 'GZM_Hand_R_IK', handRIkGizmoData())
+    createGizmo(context, 'GZM_Elbow_L', elbowLGizmoData())
+    createGizmo(context, 'GZM_Elbow_R', elbowRGizmoData())
+    
+       
 class BodyRigController(bpy.types.Operator):
     """Create the body rig"""
     bl_idname = "ikify.body_rig"
@@ -68,13 +85,28 @@ class BodyRigController(bpy.types.Operator):
         armature = obj.data
         armature.show_bone_custom_shapes = True
         
+        # Create all the gizmo objects
+        createAllGizmos(context)
+        
         # Create the FK rig
         createFKControls(context, obj)
         # Create the IK rig
         createIKControls(context, obj)
         
+        
+        # Make Root bone visible in layer 16
+        bpy.ops.object.mode_set(mode='EDIT', toggle=False)
+        root_bone = obj.data.edit_bones['root']
+        root_bone.layers[16] = True
+
+        # Eventually move to POSE mode
+        bpy.ops.object.mode_set(mode='POSE', toggle=False)        
+
+        # Set all remaining custom shapes for pose bones
+        setCustomShape(obj, 'root', 'GZM_root', 1.0)
+
         # Set layer visibility to only newly added controls
-        bpy.ops.armature.armature_layers(layers=createLayerArray([1,2,3,4,5], 32))
+        bpy.ops.armature.armature_layers(layers=createLayerArray([1,2,3,4,5,6,16], 32))
 
         return {'FINISHED'}
 

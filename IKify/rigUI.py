@@ -40,3 +40,14 @@ class IkifyRigPanel(bpy.types.Panel):
         row = layout.row()
         row.label("Head")
         row.prop(obj, 'HeadRotationIk', text="")
+        
+        layout.label("Rig Layers")
+        layout.row().prop(obj.data, "layers", index=16, toggle=True, text="Root")
+        layout.row().prop(obj.data, "layers", index=1, toggle=True, text="Legs FK")
+        layout.row().prop(obj.data, "layers", index=2, toggle=True, text="Arms and Shoulders FK")
+        layout.row().prop(obj.data, "layers", index=3, toggle=True, text="Head and Torso")
+        layout.row().prop(obj.data, "layers", index=5, toggle=True, text="Arms IK")
+        layout.row().prop(obj.data, "layers", index=4, toggle=True, text="Legs IK")
+        layout.row().prop(obj.data, "layers", index=6, toggle=True, text="Fingers and Palm")
+        layout.row().prop(obj.data, "layers", index=7, toggle=True, text="Fingers (Tweak)")
+        
