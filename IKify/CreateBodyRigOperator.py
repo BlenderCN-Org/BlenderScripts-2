@@ -49,18 +49,34 @@ def createIKControls(context, object):
     addOneArmIK(context, object, 'R')
     
 def createAllGizmos(context):
-    createGizmo(context, 'GZM_Circle', circleGizmoData())
-    createGizmo(context, 'GZM_root', rootGizmoData())    
-    createGizmo(context, 'GZM_shoulder', shoulderGizmoData())
-    createGizmo(context, 'GZM_breasts', breastsGizmoData())
-    createGizmo(context, 'GZM_chest', chestGizmoData())
-    createGizmo(context, 'GZM_spine', spineGizmoData())
-    createGizmo(context, 'GZM_pelvis', pelvisGizmoData())
-    createGizmo(context, 'GZM_Hand_L_IK', handLIkGizmoData())
-    createGizmo(context, 'GZM_Hand_R_IK', handRIkGizmoData())
-    createGizmo(context, 'GZM_Elbow_L', elbowLGizmoData())
-    createGizmo(context, 'GZM_Elbow_R', elbowRGizmoData())
+    # Create Gizmos parent
+    gizmos_parent = None
+    if 'Gizmos' not in bpy.data.objects:
+        gizmos_parent = bpy.data.objects.new('Gizmos', None)
+        context.scene.objects.link(gizmos_parent)
+        gizmos_parent.layers = createLayerArray([19], 20)
+    else:
+        gizmos_parent = bpy.data.objects['Gizmos']    
     
+    # Create all the gizmo meshes
+    createGizmo(context, 'GZM_Circle', circleGizmoData(), gizmos_parent)
+    createGizmo(context, 'GZM_root', rootGizmoData(), gizmos_parent)
+    createGizmo(context, 'GZM_shoulder', shoulderGizmoData(), gizmos_parent)
+    createGizmo(context, 'GZM_breasts', breastsGizmoData(), gizmos_parent)
+    createGizmo(context, 'GZM_chest', chestGizmoData(), gizmos_parent)
+    createGizmo(context, 'GZM_spine', spineGizmoData(), gizmos_parent)
+    createGizmo(context, 'GZM_pelvis', pelvisGizmoData(), gizmos_parent)
+    createGizmo(context, 'GZM_Hand_L_IK', handLIkGizmoData(), gizmos_parent)
+    createGizmo(context, 'GZM_Hand_R_IK', handRIkGizmoData(), gizmos_parent)
+    createGizmo(context, 'GZM_Elbow_L', elbowLGizmoData(), gizmos_parent)
+    createGizmo(context, 'GZM_Elbow_R', elbowRGizmoData(), gizmos_parent)
+    createGizmo(context, 'GZM_Foot_IK', footIkGizmoData(), gizmos_parent)
+    createGizmo(context, 'GZM_Foot_Roll_IK', footRollIkGizmoData(), gizmos_parent)
+    createGizmo(context, 'GZM_Toes_IK', toesIkGizmoData(), gizmos_parent)
+    createGizmo(context, 'GZM_Finger', fingerGizmoData(), gizmos_parent)
+    createGizmo(context, 'GZM_Thumb', thumbGizmoData(), gizmos_parent)
+    createGizmo(context, 'GZM_Palm_L', palmLGizmoData(), gizmos_parent)
+    createGizmo(context, 'GZM_Palm_R', palmRGizmoData(), gizmos_parent)    
        
 class BodyRigController(bpy.types.Operator):
     """Create the body rig"""

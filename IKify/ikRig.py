@@ -147,6 +147,13 @@ def addOneLegIK(context, object, L_R):
     pose_toes_IK.lock_location = [True, True, True]
     pose_toes_IK.lock_rotation = [False, True, True]
     
+    # Set custom shapes
+    setCustomShape(object, FOOT_IK, 'GZM_Foot_IK', 1.0)
+    setCustomShape(object, FOOT_ROLL_IK, 'GZM_Foot_Roll_IK', 1.0)
+    pose_foot_roll.custom_shape_transform = pose_foot
+    setCustomShape(object, TOES_IK, 'GZM_Toes_IK', 1.0)       
+    L_R_flip = 'L' if L_R == 'R' else 'R'    
+    setCustomShape(object, KNEE_TARGET_IK, 'GZM_Elbow_' + L_R_flip, 1.5)
     
 def addOneArmIK(context, object, L_R):    
     VIEW_LAYER = 5

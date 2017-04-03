@@ -173,11 +173,7 @@ def addHeadNeckRig(context, object, gizmo_obj):
         'SOCKET_ROTATION', 0.0, MCH_BODY_CHILD)
     if rotation_constraint:
         addDriver(rotation_constraint, 'influence', object, '["HeadRotationIk"]')
-        
-    # add custom shapes for neck and head fk bones
-    setCustomShape(object, 'neck', 'GZM_Circle', 1.5)
-    setCustomShape(object, HEAD_FK, 'GZM_Circle', 5.0)
-    
+
     # limit transforms for control bones
     pose_neck = object.pose.bones['neck']
     pose_neck.lock_location = [True, True, True]
@@ -186,13 +182,18 @@ def addHeadNeckRig(context, object, gizmo_obj):
     pose_head_fk = object.pose.bones[HEAD_FK]
     pose_head_fk.lock_location = [True, True, True]
     pose_head_fk.lock_scale = [True, True, True]
+        
+    # add custom shapes for neck and head fk bones
+    setCustomShape(object, 'neck', 'GZM_Circle', 1.5)
+    setCustomShape(object, HEAD_FK, 'GZM_Circle', 5.0)
+    pose_head_fk.custom_shape_transform = object.pose.bones['head']    
        
 def addTorsoRig(context, object, gizmo_obj):
     bpy.ops.object.mode_set(mode='EDIT', toggle=False)
     
     MCH_PELVIS_PARENT = 'MCH-pelvis_parent'
     MCH_SPINE01_PARENT = 'MCH-spine01_parent'
-    MCH_SPINE01_FK_PARENT = 'MCH-spine02_FK_parent'
+    MCH_SPINE01_FK_PARENT = 'MCH-spine01_FK_parent'
     MCH_SPINE02_PARENT = 'MCH-spine02_parent'
     MCH_SPINE03_PARENT = 'MCH-spine03_parent'    
     PELVIS_FK = 'pelvis_FK'
@@ -261,7 +262,6 @@ def addTorsoRig(context, object, gizmo_obj):
     tail = head.copy()
     tail.z += 0.07
     createNewBone(object, MCH_SPINE01_FK_PARENT, 'pelvis', False, head, tail, 0, 25)
-    #object.data.edit_bones[MCH_SPINE01_FK_PARENT].use_inherit_rotation = False
     
     head = spine01_bone.head.copy()
     tail = head.copy()
@@ -326,6 +326,7 @@ def addTorsoRig(context, object, gizmo_obj):
     setCustomShape(object, PELVIS_FK, 'GZM_pelvis', 1.0)
     setCustomShape(object, SPINE01_FK, 'GZM_spine', 1.0)
     setCustomShape(object, SPINE02_FK, 'GZM_chest', 1.0)
+    pose_spine02_fk.custom_shape_transform = object.pose.bones['spine02']
     
     # If breasts are present, lock scaling and location transforms and add custom shapes
     if 'breast_L' in object.pose.bones:
@@ -410,6 +411,13 @@ def addOneFingerRig(context, object, finger, L_R, gizmo_obj):
     
     pose_finger_fk = object.pose.bones[FINGER_FK]
     pose_finger_fk.lock_scale = [True, False, True]
+    pose_finger_fk.lock_location = [True, True, True]
+    
+    # Custom shapes for main finger control
+    if finger == 'thumb':
+        setCustomShape(object, FINGER_FK, 'GZM_Thumb', 1.0)
+    else:
+        setCustomShape(object, FINGER_FK, 'GZM_Finger', 1.0)    
     
     # Custom shapes for finger tweak controls
     setCustomShape(object, FINGER02, 'GZM_Circle', 1.0)
@@ -442,6 +450,10 @@ def addPalmRig(context, object, L_R):
     pose_pinky_palm = object.pose.bones[PINKY]
     pose_pinky_palm.rotation_mode = 'XYZ'
     pose_pinky_palm.lock_rotation = [False, True, True]
+    pose_pinky_palm.lock_scale = [True, True, True]
+    
+    # Set custom shape
+    setCustomShape(object, PINKY, "GZM_Palm_" + L_R, 1.0)
     
     
     
