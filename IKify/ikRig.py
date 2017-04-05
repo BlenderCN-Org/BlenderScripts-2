@@ -10,15 +10,15 @@ def addOneLegIK(context, object, L_R):
     # so that parents can be set correctly during creation of bones themselves.
     # MCH bones are mechanism bones which will be hidden from the user
     
-    MCH_THIGH = 'MCH-thigh_' + L_R + '_IK'
-    MCH_CALF = 'MCH-calf_' + L_R + '_IK'
-    MCH_FOOT = 'MCH-foot_' + L_R + '_IK'
-    MCH_FOOT_ROLL_PARENT = 'MCH-foot_roll_parent_' + L_R + '_IK'
-    MCH_FOOT_ROCKER = 'MCH-foot_rocker_' + L_R + '_IK'
-    FOOT_IK = 'foot_' + L_R + '_IK'
-    TOES_IK = 'toes_' + L_R + '_IK'
-    FOOT_ROLL_IK = 'foot_roll_' + L_R + '_IK'
-    KNEE_TARGET_IK = 'knee_target_' + L_R + '_IK'
+    MCH_THIGH = 'MCH-thigh_IK_' + L_R
+    MCH_CALF = 'MCH-calf_IK_' + L_R
+    MCH_FOOT = 'MCH-foot_IK_' + L_R
+    MCH_FOOT_ROLL_PARENT = 'MCH-foot_roll_parent_IK_' + L_R
+    MCH_FOOT_ROCKER = 'MCH-foot_rocker_IK_' + L_R
+    FOOT_IK = 'foot_IK_' + L_R
+    TOES_IK = 'toes_IK_' + L_R
+    FOOT_ROLL_IK = 'foot_roll_IK_' + L_R
+    KNEE_TARGET_IK = 'knee_target_IK_' + L_R
         
     bpy.ops.object.mode_set(mode='EDIT', toggle=False)
 
@@ -150,7 +150,7 @@ def addOneLegIK(context, object, L_R):
     # Set custom shapes
     setCustomShape(object, FOOT_IK, 'GZM_Foot_IK', 1.0)
     setCustomShape(object, FOOT_ROLL_IK, 'GZM_Foot_Roll_IK', 1.0)
-    pose_foot_roll.custom_shape_transform = pose_foot
+    pose_foot_roll.custom_shape_transform = object.pose.bones[MCH_FOOT]
     setCustomShape(object, TOES_IK, 'GZM_Toes_IK', 1.0)       
     L_R_flip = 'L' if L_R == 'R' else 'R'    
     setCustomShape(object, KNEE_TARGET_IK, 'GZM_Elbow_' + L_R_flip, 1.5)
@@ -159,10 +159,10 @@ def addOneArmIK(context, object, L_R):
     VIEW_LAYER = 5
     MCH_LAYER = 24
 
-    MCH_UPPERARM = 'MCH-upperarm_' + L_R + '_IK'
-    MCH_LOWERARM = 'MCH-lowerarm_' + L_R + '_IK'
-    HAND_IK = 'hand_' + L_R + '_IK'
-    ELBOW_TARGET_IK = 'elbow_target_' + L_R + '_IK'
+    MCH_UPPERARM = 'MCH-upperarm_IK_' + L_R
+    MCH_LOWERARM = 'MCH-lowerarm_IK_' + L_R
+    HAND_IK = 'hand_IK_' + L_R
+    ELBOW_TARGET_IK = 'elbow_target_IK_' + L_R
 
     bpy.ops.object.mode_set(mode='EDIT', toggle=False)
 

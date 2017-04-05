@@ -11,13 +11,20 @@ def addOneFKControl(context, object, deform_bone_name, gizmo_obj, layer_number, 
     # If a bone with the same name as new FK control bone already exists,
     # return
     new_bone_name = deform_bone_name + "_FK"
+
+    # if deformation bone is a left/right bone, then maintain the naming scheme such that
+    # last 2 letters are '_L' or '_R'. This is required for copy pasting mirrored poses.
+    l_r_bone = (deform_bone_name[-1] == 'L' or deform_bone_name[-1] == 'R')
+    if l_r_bone:
+        new_bone_name = deform_bone_name[:-1] + 'FK_' + deform_bone_name[-1]
+        
     if new_bone_name in object.data.edit_bones:
         return new_bone_name
     
     # In case of the upper arm bone, create the arm socket bone.
     L_R = deform_bone_name[-1]
-    MCH_CLAVICLE_CHILD = 'MCH-clavicle_child_' + L_R + '_FK'
-    MCH_ARM_SOCKET = 'MCH-arm_socket_' + L_R + '_FK'
+    MCH_CLAVICLE_CHILD = 'MCH-clavicle_child_FK_' + L_R
+    MCH_ARM_SOCKET = 'MCH-arm_socket_FK_' + L_R
     CLAVICLE_BONE_NAME = 'clavicle_' + L_R
     if deform_bone_name.startswith('upperarm'):
         # Create the clavicle child bone
@@ -361,9 +368,9 @@ def addOneFingerRig(context, object, finger, L_R, gizmo_obj):
 
     bpy.ops.object.mode_set(mode='EDIT', toggle=False)
 
-    MCH_FINGER02_parent = 'MCH-' + finger + '02_' + L_R + "_parent_FK"
-    MCH_FINGER03_parent = 'MCH-' + finger + '03_' + L_R + "_parent_FK"    
-    FINGER_FK = finger + "_" + L_R + "_FK"
+    MCH_FINGER02_parent = 'MCH-' + finger + '02_parent_FK_' + L_R
+    MCH_FINGER03_parent = 'MCH-' + finger + '03_parent_FK_' + L_R
+    FINGER_FK = finger + '_FK_' + L_R
     FINGER01 = finger + '01_' + L_R
     FINGER02 = finger + '02_' + L_R
     FINGER03 = finger + '03_' + L_R
