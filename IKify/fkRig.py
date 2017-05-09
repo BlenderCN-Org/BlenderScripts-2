@@ -124,7 +124,7 @@ def addHeadNeckRig(context, object, gizmo_obj):
     head = neck_bone.head.copy()
     tail = head.copy()
     tail.z += 0.1
-    createNewBone(object, MCH_NECK_PARENT, 'spine02', False, head, tail, 0, 25)
+    createNewBone(object, MCH_NECK_PARENT, 'spine03', False, head, tail, 0, 25)
     neck_parent_bone = object.data.edit_bones[MCH_NECK_PARENT]
     
     # set neck bone's parent to MCH_NECK_PARENT
@@ -148,7 +148,7 @@ def addHeadNeckRig(context, object, gizmo_obj):
     head = neck_bone.head.copy()
     tail = head.copy()
     tail.z += 0.07
-    createNewBone(object, MCH_BODY_CHILD, 'spine02', False, head, tail, 0, 25)
+    createNewBone(object, MCH_BODY_CHILD, 'spine03', False, head, tail, 0, 25)
     
     # create head socket bone
     head = neck_bone.head.copy()
